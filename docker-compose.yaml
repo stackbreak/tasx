@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  pgsql:
+    image: postgres:13.1
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: dockerdev
+      POSTGRES_PASSWORD: dockerdev
+
+
+  pgadmin:
+    image: dpage/pgadmin4:5
+    restart: always
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - app_net
+    ports:
+      - 4444:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pg@admin.org
+      PGADMIN_DEFAULT_PASSWORD: dockerdev
+
+volumes:
+  pg_data:
+  pgadmin_data:
+
+networks:
+  app_net:

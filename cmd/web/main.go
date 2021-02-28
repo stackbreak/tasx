@@ -10,12 +10,20 @@ import (
 )
 
 func main() {
+	config := web.NewConfig()
+
+	if err := config.Init(); err != nil {
+		log.Fatal("error initializing configs:", err)
+	}
+
 	repos := repository.NewRepository()
 	services := service.NewService(repos)
 	globalHandler := handlers.NewGlobalHandler(services)
 
+	port := config.GetString("port")
+
 	srv := new(web.Server)
-	if err := srv.Run("4000", globalHandler.InitRoutes()); err != nil {
-		log.Fatal("Stop server because", err)
+	if err := srv.Run(port, globalHandler.InitRoutes()); err != nil {
+		log.Fatal("error occurred while running server:", err)
 	}
 }
