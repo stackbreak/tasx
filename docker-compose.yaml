@@ -9,11 +9,11 @@ services:
     networks:
       - app_net
     ports:
-      - 5432:5432
+      - ${DB_PORT:-5432}:5432
     environment:
-      POSTGRES_USER: dockerdev
-      POSTGRES_PASSWORD: dockerdev
-      POSTGRES_DB: tasx_app
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
 
 
   pgadmin:
@@ -24,10 +24,10 @@ services:
     networks:
       - app_net
     ports:
-      - 4444:80
+      - ${PGADMIN_PORT:-4444}:80
     environment:
-      PGADMIN_DEFAULT_EMAIL: pg@admin.org
-      PGADMIN_DEFAULT_PASSWORD: dockerdev
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASS}
 
 volumes:
   pg_data:
