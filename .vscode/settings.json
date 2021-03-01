@@ -4,4 +4,13 @@
     "--fast"
   ],
   "go.lintOnSave": "package",
+
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools",
+    "editor.formatOnSave": true
+  },
+  "sqltools.format": {
+    "reservedWordCase": "lower",
+    "linesBetweenQueries": 2,
+  },
 }

@@ -13,6 +13,7 @@ services:
     environment:
       POSTGRES_USER: dockerdev
       POSTGRES_PASSWORD: dockerdev
+      POSTGRES_DB: tasx_app
 
 
   pgadmin:
