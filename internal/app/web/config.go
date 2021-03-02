@@ -10,9 +10,9 @@ type EnvVars struct {
 	DbUser    string `env:"DB_USER,required"`
 	DbPass    string `env:"DB_PASS,required"`
 	DbName    string `env:"DB_NAME,required"`
-	DbHost    string `env:"DB_HOST" envDefault:"localhost"`
-	DbPort    string `env:"DB_PORT" envDefault:"5432"`
-	DbSslMode string `env:"DB_SSLMODE" envDefault:"disable"`
+	DbHost    string `env:"DB_HOST,required"`
+	DbPort    string `env:"DB_PORT,required"`
+	DbSslMode string `env:"DB_SSLMODE,required"`
 }
 
 type Config struct {
@@ -26,7 +26,7 @@ func NewConfig() *Config {
 
 func (c *Config) LoadFile() error {
 	c.File.AddConfigPath("configs")
-	c.File.SetConfigName("config")
+	c.File.SetConfigName("web")
 	return c.File.ReadInConfig()
 }
 

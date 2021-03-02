@@ -1,9 +1,9 @@
-TOOLS_BIN_DIR=./tools/bin/
-TOOLS_FILE=./tools/tools.go
-TOOLS_MIGRATE_FILE=./tools/migrate.go
-MIGRATIONS_DIR=./migrations
-LOCAL_ENV_FILE=./configs/local.env
-SCRIPT_GET_PG_URL=./scripts/get-pg-url.sh
+TOOLS_BIN_DIR = ./tools/bin/
+TOOLS_FILE = ./tools/tools.go
+TOOLS_MIGRATE_FILE = ./tools/migrate.go
+MIGRATIONS_DIR = ./migrations
+LOCAL_ENV_FILE = ./configs/local.env
+SCRIPT_GET_PG_URL = ./scripts/get-pg-url.sh
 
 env-start:
 	docker-compose --env-file $(LOCAL_ENV_FILE) up -d
