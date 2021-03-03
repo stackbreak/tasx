@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 
 	"github.com/stackbreak/tasx/internal/app/web"
 	"github.com/stackbreak/tasx/internal/pkg/handlers"
-	"github.com/stackbreak/tasx/internal/pkg/repository"
-	"github.com/stackbreak/tasx/internal/pkg/service"
+	"github.com/stackbreak/tasx/internal/pkg/repositories"
+	"github.com/stackbreak/tasx/internal/pkg/services"
 )
 
 func main() {
+	log := web.NewLogger()
 	config := web.NewConfig()
+
 	if err := config.LoadFile(); err != nil {
 		log.Fatal("error initializing config file: ", err)
 	}
@@ -22,7 +23,7 @@ func main() {
 		log.Fatal("error initializing env variables: ", err)
 	}
 
-	db, err := repository.NewPgDB(&repository.PgConfig{
+	db, err := repositories.NewPgDB(&repositories.PgConfig{
 		Host:    config.Env.DbHost,
 		Port:    config.Env.DbPort,
 		User:    config.Env.DbUser,
@@ -35,9 +36,9 @@ func main() {
 	}
 	defer db.Close()
 
-	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
-	globalHandler := handlers.NewGlobalHandler(services)
+	repos := repositories.NewPgRepositoryManager(db)
+	services := services.NewServices(repos)
+	globalHandler := handlers.NewGlobalHandler(services, log)
 
 	port := config.File.GetString("api.port")
 

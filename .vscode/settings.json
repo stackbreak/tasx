@@ -3,7 +3,7 @@
   "go.lintFlags": [
     "--fast"
   ],
-  "go.lintOnSave": "package",
+  "go.lintOnSave": "workspace",
 
   "[sql]": {
     "editor.defaultFormatter": "mtxr.sqltools",

@@ -7,11 +7,17 @@ type TaskList struct {
 	UserId      int    `json:"user_id"`
 }
 
+type TaskListInterface interface { //
+}
+
 type Task struct {
 	Id          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	IsDone      bool   `json:"is_done"`
+}
+
+type TaskInterface interface { //
 }
 
 // many-to-many relation
