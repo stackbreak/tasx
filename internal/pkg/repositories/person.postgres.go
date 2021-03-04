@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
@@ -35,4 +37,26 @@ func (r *PgPerson) CreatePerson(person *models.Person) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (r *PgPerson) GetPerson(username string) (*models.Person, error) {
+	stmt := fmt.Sprintf(`
+		select
+			*
+		from %s
+		where
+			username=$1
+	`,
+		tablePerson)
+
+	var person models.Person
+	err := r.db.Get(&person, stmt, username)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, models.ErrUsernameNotFound
+		}
+		return nil, err
+	}
+
+	return &person, nil
 }

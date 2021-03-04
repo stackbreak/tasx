@@ -9,15 +9,15 @@ import (
 )
 
 func (gh *GlobalHandler) signUp(ctx *gin.Context) {
-	person := new(models.Person)
+	personData := new(models.Person)
 
-	err := ctx.BindJSON(person)
+	err := ctx.BindJSON(personData)
 	if err != nil {
 		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := gh.services.AuthServiceCreatePerson(person)
+	id, err := gh.services.AuthServiceCreatePerson(personData)
 	if err != nil {
 		gh.callResponseGenericError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -28,6 +28,27 @@ func (gh *GlobalHandler) signUp(ctx *gin.Context) {
 	})
 }
 
+type loginInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
 func (gh *GlobalHandler) login(ctx *gin.Context) {
-	//
+	loginData := new(loginInput)
+
+	err := ctx.BindJSON(loginData)
+	if err != nil {
+		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := gh.services.AuthServiceGenerateToken(loginData.Username, loginData.Password)
+	if err != nil {
+		gh.callResponseGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

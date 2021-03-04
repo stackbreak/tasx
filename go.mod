@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/caarlos0/env/v6 v6.5.0
+	github.com/cristalhq/jwt/v3 v3.0.11
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang-migrate/migrate/v4 v4.14.1
