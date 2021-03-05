@@ -9,6 +9,7 @@ import (
 	"github.com/stackbreak/tasx/internal/pkg/handlers"
 	"github.com/stackbreak/tasx/internal/pkg/repositories"
 	"github.com/stackbreak/tasx/internal/pkg/services"
+	"github.com/stackbreak/tasx/internal/pkg/tokens"
 )
 
 func main() {
@@ -36,8 +37,13 @@ func main() {
 	}
 	defer db.Close()
 
+	tokenManager, err := tokens.NewTokenMangerHS([]byte(config.Env.TokenSecret))
+	if err != nil {
+		log.Fatal("error initializing token manager:", err)
+	}
+
 	repos := repositories.NewPgRepositoryManager(db)
-	services := services.NewServices(repos)
+	services := services.NewServices(repos, tokenManager)
 	globalHandler := handlers.NewGlobalHandler(services, log)
 
 	port := config.File.GetString("api.port")

@@ -15,4 +15,6 @@ DB_SSLMODE=disable
 PGADMIN_EMAIL=secret@email.org
 PGADMIN_PASS=secret_pass
 PGADMIN_PORT=4444
+
+TOKEN_SECRET=super@HYPER!secret
 ```

@@ -2,16 +2,19 @@ package services
 
 import (
 	"errors"
-	"fmt"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/cristalhq/jwt/v3"
 	"github.com/stackbreak/tasx/internal/pkg/models"
+	"github.com/stackbreak/tasx/internal/pkg/tokens"
 )
 
 var ErrInvalidCredentials = errors.New("auth.service: invalid credentials")
+
+type tokenClaims struct {
+	RegisteredClaims *tokens.Registered
+	PersonId         int `json:"person_id"`
+}
 
 func (s *Services) AuthServiceGetPersonByCredentials(username, password string) (*models.Person, error) {
 	person, err := s.repo.Person.GetPerson(username)
@@ -34,12 +37,12 @@ func (s *Services) AuthServiceGetPersonByCredentials(username, password string) 
 }
 
 func (s *Services) AuthServiceCreatePerson(person *models.Person) (int, error) {
-	passHash, err := generatePasswordHash(person.Password)
+	passHash, err := bcrypt.GenerateFromPassword([]byte(person.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return -1, err
 	}
 
-	person.Password = passHash
+	person.Password = string(passHash)
 	return s.repo.Person.CreatePerson(person)
 }
 
@@ -49,57 +52,24 @@ func (s *Services) AuthServiceGenerateToken(username, password string) (string, 
 		return "", err
 	}
 
-	token, err := jwtCreateToken(jwtSecret, person.Id)
+	token, err := s.tokens.CreateWithClaims(&tokenClaims{
+		RegisteredClaims: s.tokens.GetRegisteredClaimsBase(-1),
+		PersonId:         person.Id,
+	})
 	if err != nil {
 		return "", err
-	}
-
-	return token, nil
-}
-
-func generatePasswordHash(password string) (string, error) {
-	passHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-
-	return string(passHash), nil
-}
-
-/* -------------------------------------------------------------------------- */
-// TODO:
-// move to separate pkg
-
-var (
-	jwtSecret = []byte(`super@HYPER!secret`)
-	tokenTTL  = 12 * time.Hour
-)
-
-type tokenClaims struct {
-	jwt.RegisteredClaims
-	UserId int `json:"user_id"`
-}
-
-func jwtCreateToken(secret []byte, userId int) (string, error) {
-	jwtSigner, err := jwt.NewSignerHS(jwt.HS256, secret)
-	if err != nil {
-		return "", fmt.Errorf("jwt: unable to create signer. %w", err)
-	}
-
-	jwtBuilder := jwt.NewBuilder(jwtSigner)
-
-	claims := &tokenClaims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-		UserId: userId,
-	}
-
-	token, err := jwtBuilder.Build(claims)
-	if err != nil {
-		return "", fmt.Errorf("jwt: error building token. %w", err)
 	}
 
 	return token.String(), nil
+}
+
+func (s *Services) AuthServiceParseToken(tokenStr string) (int, error) {
+	var claims tokenClaims
+
+	err := s.tokens.ParseToClaims(tokenStr, &claims)
+	if err != nil {
+		return -1, err
+	}
+
+	return claims.PersonId, nil
 }
