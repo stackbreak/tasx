@@ -1,9 +1,16 @@
-package repository
+package repositories
 
 import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+)
+
+const (
+	tablePerson     = "person"
+	tableTask       = "task"
+	tableTaskList   = "task_list"
+	tableTaskToList = "task_to_list"
 )
 
 type PgConfig struct {
@@ -35,4 +42,10 @@ func NewPgDB(cfg *PgConfig) (*sqlx.DB, error) {
 	}
 
 	return db, nil
+}
+
+func NewPgRepositoryManager(db *sqlx.DB) *RepositoryManager {
+	return &RepositoryManager{
+		Person: &PgPerson{db},
+	}
 }

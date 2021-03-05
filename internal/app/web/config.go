@@ -13,6 +13,8 @@ type EnvVars struct {
 	DbHost    string `env:"DB_HOST,required"`
 	DbPort    string `env:"DB_PORT,required"`
 	DbSslMode string `env:"DB_SSLMODE,required"`
+
+	TokenSecret string `env:"TOKEN_SECRET,required"`
 }
 
 type Config struct {
