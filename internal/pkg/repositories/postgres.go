@@ -46,6 +46,7 @@ func NewPgDB(cfg *PgConfig) (*sqlx.DB, error) {
 
 func NewPgRepositoryManager(db *sqlx.DB) *RepositoryManager {
 	return &RepositoryManager{
-		Person: &PgPerson{db},
+		Person:   &PgPerson{db},
+		TaskList: &PgTaskList{db},
 	}
 }

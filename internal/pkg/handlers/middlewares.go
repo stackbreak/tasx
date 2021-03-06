@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -9,8 +10,10 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	CtxUserIdKey        = "userId"
+	CtxPersonIdKey      = "personId"
 )
+
+var ErrPersonIdNotExtracted = errors.New("pkg.handlers: unable to extract person_id")
 
 func (gh *GlobalHandler) mdwUserIdentity(ctx *gin.Context) {
 	header := ctx.GetHeader(authorizationHeader)
@@ -31,5 +34,19 @@ func (gh *GlobalHandler) mdwUserIdentity(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set(CtxUserIdKey, userId)
+	ctx.Set(CtxPersonIdKey, userId)
+}
+
+func extractPersonIdFromCtx(ctx *gin.Context) (int, error) {
+	personId, ok := ctx.Get(CtxPersonIdKey)
+	if !ok {
+		return -1, ErrPersonIdNotExtracted
+	}
+
+	personIdInt, ok := personId.(int)
+	if !ok {
+		return -1, ErrPersonIdNotExtracted
+	}
+
+	return personIdInt, nil
 }

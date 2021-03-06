@@ -5,7 +5,19 @@ import (
 )
 
 type RepositoryManager struct {
-	Person   models.PersonInterface
-	TaskList models.TaskListInterface
-	Task     models.TaskInterface
+	Person
+	TaskList
+	Task
+}
+
+type Person interface {
+	CreateOne(person *models.Person) (int, error)
+	GetOne(username string) (*models.Person, error)
+}
+
+type TaskList interface { //
+	CreateOne(personId int, list *models.TaskList) (int, error)
+}
+
+type Task interface { //
 }

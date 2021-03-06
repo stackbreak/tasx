@@ -14,7 +14,7 @@ type PgPerson struct {
 	db *sqlx.DB
 }
 
-func (r *PgPerson) CreatePerson(person *models.Person) (int, error) {
+func (r *PgPerson) CreateOne(person *models.Person) (int, error) {
 	stmt := fmt.Sprintf(`
 		insert into %s
 			(name, username, password_hash)
@@ -39,7 +39,7 @@ func (r *PgPerson) CreatePerson(person *models.Person) (int, error) {
 	return id, nil
 }
 
-func (r *PgPerson) GetPerson(username string) (*models.Person, error) {
+func (r *PgPerson) GetOne(username string) (*models.Person, error) {
 	stmt := fmt.Sprintf(`
 		select
 			*

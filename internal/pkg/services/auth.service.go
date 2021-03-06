@@ -17,7 +17,7 @@ type tokenClaims struct {
 }
 
 func (s *Services) AuthServiceGetPersonByCredentials(username, password string) (*models.Person, error) {
-	person, err := s.repo.Person.GetPerson(username)
+	person, err := s.repo.Person.GetOne(username)
 	if err != nil {
 		if errors.Is(err, models.ErrUsernameNotFound) {
 			return nil, ErrInvalidCredentials
@@ -43,7 +43,7 @@ func (s *Services) AuthServiceCreatePerson(person *models.Person) (int, error) {
 	}
 
 	person.Password = string(passHash)
-	return s.repo.Person.CreatePerson(person)
+	return s.repo.Person.CreateOne(person)
 }
 
 func (s *Services) AuthServiceGenerateToken(username, password string) (string, error) {

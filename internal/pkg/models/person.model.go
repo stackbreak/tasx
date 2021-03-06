@@ -10,8 +10,3 @@ type Person struct {
 	Username string `json:"username" binding:"required" db:"username"`
 	Password string `json:"password" binding:"required" db:"password_hash"`
 }
-
-type PersonInterface interface {
-	CreatePerson(person *Person) (int, error)
-	GetPerson(username string) (*Person, error)
-}

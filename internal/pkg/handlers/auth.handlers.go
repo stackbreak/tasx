@@ -11,8 +11,9 @@ import (
 func (gh *GlobalHandler) signUp(ctx *gin.Context) {
 	personData := new(models.Person)
 
-	err := ctx.BindJSON(personData)
+	err := ctx.ShouldBindJSON(personData)
 	if err != nil {
+		err = isEmptyBodyErr(err)
 		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -36,8 +37,9 @@ type loginInput struct {
 func (gh *GlobalHandler) login(ctx *gin.Context) {
 	loginData := new(loginInput)
 
-	err := ctx.BindJSON(loginData)
+	err := ctx.ShouldBindJSON(loginData)
 	if err != nil {
+		err = isEmptyBodyErr(err)
 		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
