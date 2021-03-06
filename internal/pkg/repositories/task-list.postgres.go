@@ -35,3 +35,42 @@ func (r *PgTaskList) CreateOne(personId int, list *models.TaskList) (int, error)
 
 	return id, nil
 }
+
+func (r *PgTaskList) GetAll(personId int) ([]models.TaskList, error) {
+	stmt := fmt.Sprintf(`
+		select
+			id,
+			title,
+			description
+		from %s
+		where
+			person_id = $1
+	`,
+		tableTaskList,
+	)
+
+	var lists []models.TaskList
+	err := r.db.Select(&lists, stmt, personId)
+
+	return lists, err
+}
+
+func (r *PgTaskList) GetOne(personId, taskListId int) (*models.TaskList, error) {
+	stmt := fmt.Sprintf(`
+		select
+			id,
+			title,
+			description
+		from %s
+		where
+			person_id = $1
+			and id = $2
+	`,
+		tableTaskList,
+	)
+
+	var oneList models.TaskList
+	err := r.db.Get(&oneList, stmt, personId, taskListId)
+
+	return &oneList, err
+}

@@ -17,6 +17,8 @@ type Person interface {
 
 type TaskList interface { //
 	CreateOne(personId int, list *models.TaskList) (int, error)
+	GetAll(personId int) ([]models.TaskList, error)
+	GetOne(personId, taskListId int) (*models.TaskList, error)
 }
 
 type Task interface { //

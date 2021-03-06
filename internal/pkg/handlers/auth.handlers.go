@@ -14,13 +14,13 @@ func (gh *GlobalHandler) signUp(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(personData)
 	if err != nil {
 		err = isEmptyBodyErr(err)
-		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	id, err := gh.services.AuthServiceCreatePerson(personData)
 	if err != nil {
-		gh.callResponseGenericError(ctx, http.StatusInternalServerError, err.Error())
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -40,13 +40,13 @@ func (gh *GlobalHandler) login(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(loginData)
 	if err != nil {
 		err = isEmptyBodyErr(err)
-		gh.callResponseGenericError(ctx, http.StatusBadRequest, err.Error())
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := gh.services.AuthServiceGenerateToken(loginData.Username, loginData.Password)
 	if err != nil {
-		gh.callResponseGenericError(ctx, http.StatusInternalServerError, err.Error())
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 

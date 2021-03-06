@@ -1,12 +1,17 @@
 package services
 
-import "github.com/stackbreak/tasx/internal/pkg/models"
+import (
+	"github.com/stackbreak/tasx/internal/pkg/models"
+)
 
 func (s *Services) TaskListServiceCreate(personId int, list *models.TaskList) (int, error) {
-	taskListId, err := s.repo.TaskList.CreateOne(personId, list)
-	if err != nil {
-		return 0, err
-	}
+	return s.repo.TaskList.CreateOne(personId, list)
+}
 
-	return taskListId, nil
+func (s *Services) TaskListServiceGetAll(personId int) ([]models.TaskList, error) {
+	return s.repo.TaskList.GetAll(personId)
+}
+
+func (s *Services) TaskListServiceGetOneById(personId, taskListId int) (*models.TaskList, error) {
+	return s.repo.TaskList.GetOne(personId, taskListId)
 }

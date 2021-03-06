@@ -2,13 +2,18 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/stackbreak/tasx/internal/pkg/models"
 )
 
-type responseGenericError struct {
+type respGenericError struct {
 	Message string `json:"message"`
 }
 
-func (gh *GlobalHandler) callResponseGenericError(ctx *gin.Context, statusCode int, message string) {
+type respAllTaskLists struct {
+	Data []models.TaskList `json:"data"`
+}
+
+func (gh *GlobalHandler) callRespGenericError(ctx *gin.Context, statusCode int, message string) {
 	gh.log.Error(message)
-	ctx.AbortWithStatusJSON(statusCode, &responseGenericError{Message: message})
+	ctx.AbortWithStatusJSON(statusCode, &respGenericError{Message: message})
 }

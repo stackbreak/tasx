@@ -18,19 +18,19 @@ var ErrPersonIdNotExtracted = errors.New("pkg.handlers: unable to extract person
 func (gh *GlobalHandler) mdwUserIdentity(ctx *gin.Context) {
 	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
-		gh.callResponseGenericError(ctx, http.StatusUnauthorized, "empty \"Authorization\" header")
+		gh.callRespGenericError(ctx, http.StatusUnauthorized, "empty \"Authorization\" header")
 		return
 	}
 
 	headerParts := strings.Split(header, " ")
 	if len(headerParts) != 2 {
-		gh.callResponseGenericError(ctx, http.StatusUnauthorized, "invalid \"Authorization\" header")
+		gh.callRespGenericError(ctx, http.StatusUnauthorized, "invalid \"Authorization\" header")
 		return
 	}
 
 	userId, err := gh.services.AuthServiceParseToken(headerParts[1])
 	if err != nil {
-		gh.callResponseGenericError(ctx, http.StatusUnauthorized, err.Error())
+		gh.callRespGenericError(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
 
