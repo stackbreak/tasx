@@ -5,6 +5,10 @@ import (
 	"github.com/stackbreak/tasx/internal/pkg/models"
 )
 
+type respStatus struct {
+	Status string `json:"status"`
+}
+
 type respGenericError struct {
 	Message string `json:"message"`
 }

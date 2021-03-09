@@ -12,6 +12,10 @@ func (s *Services) TaskListServiceGetAll(personId int) ([]models.TaskList, error
 	return s.repo.TaskList.GetAll(personId)
 }
 
-func (s *Services) TaskListServiceGetOneById(personId, taskListId int) (*models.TaskList, error) {
+func (s *Services) TaskListServiceGetOne(personId, taskListId int) (*models.TaskList, error) {
 	return s.repo.TaskList.GetOne(personId, taskListId)
+}
+
+func (s *Services) TaskListServiceDeleteOne(personId, taskListId int) error {
+	return s.repo.TaskList.DeleteOne(personId, taskListId)
 }

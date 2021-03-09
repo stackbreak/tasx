@@ -74,3 +74,18 @@ func (r *PgTaskList) GetOne(personId, taskListId int) (*models.TaskList, error) 
 
 	return &oneList, err
 }
+
+func (r *PgTaskList) DeleteOne(personId, taskListId int) error {
+	stmt := fmt.Sprintf(`
+		delete from %s
+		where
+			person_id = $1
+			and id = $2
+	`,
+		tableTaskList,
+	)
+
+	_, err := r.db.Exec(stmt, personId, taskListId)
+
+	return err
+}

@@ -65,7 +65,7 @@ func (gh *GlobalHandler) getOneListById(ctx *gin.Context) {
 		return
 	}
 
-	list, err := gh.services.TaskListServiceGetOneById(personId, taskListId)
+	list, err := gh.services.TaskListServiceGetOne(personId, taskListId)
 	if err != nil {
 		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -79,5 +79,23 @@ func (gh *GlobalHandler) updateOneList(ctx *gin.Context) {
 }
 
 func (gh *GlobalHandler) deleteOneList(ctx *gin.Context) {
-	//
+	personId, err := extractPersonIdFromCtx(ctx)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	taskListId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = gh.services.TaskListServiceDeleteOne(personId, taskListId)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &respStatus{"ok"})
 }
