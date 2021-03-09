@@ -75,7 +75,32 @@ func (gh *GlobalHandler) getOneListById(ctx *gin.Context) {
 }
 
 func (gh *GlobalHandler) updateOneList(ctx *gin.Context) {
-	//
+	personId, err := extractPersonIdFromCtx(ctx)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	taskListId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	inputData := new(models.InputUpdateTaskList)
+	if err := ctx.ShouldBindJSON(inputData); err != nil {
+		err = isEmptyBodyErr(err)
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = gh.services.TaskListServiceUpdateOne(personId, taskListId, inputData)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &respStatus{"ok"})
 }
 
 func (gh *GlobalHandler) deleteOneList(ctx *gin.Context) {

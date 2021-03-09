@@ -19,3 +19,10 @@ func (s *Services) TaskListServiceGetOne(personId, taskListId int) (*models.Task
 func (s *Services) TaskListServiceDeleteOne(personId, taskListId int) error {
 	return s.repo.TaskList.DeleteOne(personId, taskListId)
 }
+
+func (s *Services) TaskListServiceUpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error {
+	if err := inputData.Validate(); err != nil {
+		return err
+	}
+	return s.repo.TaskList.UpdateOne(personId, taskListId, inputData)
+}

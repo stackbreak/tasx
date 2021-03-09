@@ -15,11 +15,12 @@ type Person interface {
 	GetOne(username string) (*models.Person, error)
 }
 
-type TaskList interface { //
+type TaskList interface {
 	CreateOne(personId int, list *models.TaskList) (int, error)
 	GetAll(personId int) ([]models.TaskList, error)
 	GetOne(personId, taskListId int) (*models.TaskList, error)
 	DeleteOne(personId, taskListId int) error
+	UpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error
 }
 
 type Task interface { //

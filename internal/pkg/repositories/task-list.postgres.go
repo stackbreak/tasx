@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/stackbreak/tasx/internal/pkg/models"
@@ -86,6 +87,45 @@ func (r *PgTaskList) DeleteOne(personId, taskListId int) error {
 	)
 
 	_, err := r.db.Exec(stmt, personId, taskListId)
+
+	return err
+}
+
+func (r *PgTaskList) UpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error {
+	setVals := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if inputData.Title != nil {
+		setVals = append(setVals, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *inputData.Title)
+		argId++
+	}
+
+	if inputData.Description != nil {
+		setVals = append(setVals, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *inputData.Description)
+		argId++
+	}
+
+	setStmt := strings.Join(setVals, ", ")
+
+	stmt := fmt.Sprintf(`
+		update %s
+		set %s
+		where
+			person_id = $%d
+			and id = $%d
+	`,
+		tableTaskList,
+		setStmt,
+		argId,
+		argId+1,
+	)
+
+	args = append(args, personId, taskListId)
+
+	_, err := r.db.Exec(stmt, args...)
 
 	return err
 }
