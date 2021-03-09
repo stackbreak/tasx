@@ -61,7 +61,7 @@ func (gh *GlobalHandler) getOneListById(ctx *gin.Context) {
 
 	taskListId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidListIdParam.Error())
 		return
 	}
 
@@ -83,7 +83,7 @@ func (gh *GlobalHandler) updateOneList(ctx *gin.Context) {
 
 	taskListId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidListIdParam.Error())
 		return
 	}
 
@@ -112,7 +112,7 @@ func (gh *GlobalHandler) deleteOneList(ctx *gin.Context) {
 
 	taskListId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidListIdParam.Error())
 		return
 	}
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/stackbreak/tasx/internal/app/web"
 	"github.com/stackbreak/tasx/internal/pkg/handlers"
-	"github.com/stackbreak/tasx/internal/pkg/repositories"
+	"github.com/stackbreak/tasx/internal/pkg/repositories/postgres"
 	"github.com/stackbreak/tasx/internal/pkg/services"
 	"github.com/stackbreak/tasx/internal/pkg/tokens"
 )
@@ -24,7 +24,7 @@ func main() {
 		log.Fatal("error initializing env variables: ", err)
 	}
 
-	db, err := repositories.NewPgDB(&repositories.PgConfig{
+	db, err := postgres.NewDB(&postgres.PgConfig{
 		Host:    config.Env.DbHost,
 		Port:    config.Env.DbPort,
 		User:    config.Env.DbUser,
@@ -42,7 +42,7 @@ func main() {
 		log.Fatal("error initializing token manager:", err)
 	}
 
-	repos := repositories.NewPgRepositoryManager(db)
+	repos := postgres.NewRepositoryManager(db)
 	services := services.NewServices(repos, tokenManager)
 	globalHandler := handlers.NewGlobalHandler(services, log)
 

@@ -1,9 +1,11 @@
-package repositories
+package postgres
 
 import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+
+	"github.com/stackbreak/tasx/internal/pkg/repositories"
 )
 
 const (
@@ -22,7 +24,7 @@ type PgConfig struct {
 	SSLMode string
 }
 
-func NewPgDB(cfg *PgConfig) (*sqlx.DB, error) {
+func NewDB(cfg *PgConfig) (*sqlx.DB, error) {
 	dbURI := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host,
@@ -44,9 +46,10 @@ func NewPgDB(cfg *PgConfig) (*sqlx.DB, error) {
 	return db, nil
 }
 
-func NewPgRepositoryManager(db *sqlx.DB) *RepositoryManager {
-	return &RepositoryManager{
-		Person:   &PgPerson{db},
-		TaskList: &PgTaskList{db},
+func NewRepositoryManager(db *sqlx.DB) *repositories.RepositoryManager {
+	return &repositories.RepositoryManager{
+		Person:   &PersonRepo{db},
+		TaskList: &TaskListRepo{db},
+		Task:     &TaskRepo{db},
 	}
 }

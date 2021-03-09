@@ -1,4 +1,4 @@
-package repositories
+package postgres
 
 import (
 	"database/sql"
@@ -10,11 +10,11 @@ import (
 	"github.com/stackbreak/tasx/internal/pkg/models"
 )
 
-type PgPerson struct {
+type PersonRepo struct {
 	db *sqlx.DB
 }
 
-func (r *PgPerson) CreateOne(person *models.Person) (int, error) {
+func (r *PersonRepo) CreateOne(person *models.Person) (int, error) {
 	stmt := fmt.Sprintf(`
 		insert into %s
 			(name, username, password_hash)
@@ -39,7 +39,7 @@ func (r *PgPerson) CreateOne(person *models.Person) (int, error) {
 	return id, nil
 }
 
-func (r *PgPerson) GetOne(username string) (*models.Person, error) {
+func (r *PersonRepo) GetOne(username string) (*models.Person, error) {
 	stmt := fmt.Sprintf(`
 		select
 			*

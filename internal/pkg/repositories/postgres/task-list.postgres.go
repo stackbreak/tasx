@@ -1,4 +1,4 @@
-package repositories
+package postgres
 
 import (
 	"fmt"
@@ -8,11 +8,11 @@ import (
 	"github.com/stackbreak/tasx/internal/pkg/models"
 )
 
-type PgTaskList struct {
+type TaskListRepo struct {
 	db *sqlx.DB
 }
 
-func (r *PgTaskList) CreateOne(personId int, list *models.TaskList) (int, error) {
+func (r *TaskListRepo) CreateOne(personId int, list *models.TaskList) (int, error) {
 	stmt := fmt.Sprintf(`
 		insert into %s
 			(title, description, person_id)
@@ -37,7 +37,7 @@ func (r *PgTaskList) CreateOne(personId int, list *models.TaskList) (int, error)
 	return id, nil
 }
 
-func (r *PgTaskList) GetAll(personId int) ([]models.TaskList, error) {
+func (r *TaskListRepo) GetAll(personId int) ([]models.TaskList, error) {
 	stmt := fmt.Sprintf(`
 		select
 			id,
@@ -56,7 +56,7 @@ func (r *PgTaskList) GetAll(personId int) ([]models.TaskList, error) {
 	return lists, err
 }
 
-func (r *PgTaskList) GetOne(personId, taskListId int) (*models.TaskList, error) {
+func (r *TaskListRepo) GetOne(personId, taskListId int) (*models.TaskList, error) {
 	stmt := fmt.Sprintf(`
 		select
 			id,
@@ -76,7 +76,7 @@ func (r *PgTaskList) GetOne(personId, taskListId int) (*models.TaskList, error) 
 	return &oneList, err
 }
 
-func (r *PgTaskList) DeleteOne(personId, taskListId int) error {
+func (r *TaskListRepo) DeleteOne(personId, taskListId int) error {
 	stmt := fmt.Sprintf(`
 		delete from %s
 		where
@@ -91,7 +91,7 @@ func (r *PgTaskList) DeleteOne(personId, taskListId int) error {
 	return err
 }
 
-func (r *PgTaskList) UpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error {
+func (r *TaskListRepo) UpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error {
 	setVals := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

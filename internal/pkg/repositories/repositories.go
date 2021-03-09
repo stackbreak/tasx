@@ -23,5 +23,7 @@ type TaskList interface {
 	UpdateOne(personId, taskListId int, inputData *models.InputUpdateTaskList) error
 }
 
-type Task interface { //
+type Task interface {
+	CreateOne(listId int, task *models.Task) (int, error)
+	GetAll(personId, listId int) ([]models.Task, error)
 }

@@ -9,14 +9,14 @@ type TaskList struct {
 
 type Task struct {
 	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" db:"title"`
+	Title       string `json:"title" binding:"required" db:"title"`
 	Description string `json:"description" db:"description"`
 	IsDone      bool   `json:"is_done" db:"is_done"`
 }
 
 // many-to-many relation
 type TaskItemToList struct {
-	Id     int
-	ListId int
-	TaskId int
+	Id     int `db:"id"`
+	ListId int `db:"task_list_id"`
+	TaskId int `db:"task_id"`
 }
