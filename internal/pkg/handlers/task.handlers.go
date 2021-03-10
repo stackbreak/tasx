@@ -89,7 +89,32 @@ func (gh *GlobalHandler) getOneTaskById(ctx *gin.Context) {
 }
 
 func (gh *GlobalHandler) updateOneTask(ctx *gin.Context) {
-	//
+	personId, err := extractPersonIdFromCtx(ctx)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	taskId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidTaskIdParam.Error())
+		return
+	}
+
+	inputData := new(models.InputUpdateTask)
+	if err := ctx.ShouldBindJSON(inputData); err != nil {
+		err = isEmptyBodyErr(err)
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = gh.services.TaskServiceUpdateOne(personId, taskId, inputData)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &respStatus{"ok"})
 }
 
 func (gh *GlobalHandler) deleteOneTask(ctx *gin.Context) {

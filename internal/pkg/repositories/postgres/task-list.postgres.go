@@ -127,6 +127,5 @@ func (r *TaskListRepo) UpdateOne(personId, taskListId int, inputData *models.Inp
 	args = append(args, personId, taskListId)
 
 	_, err := r.db.Exec(stmt, args...)
-
 	return err
 }

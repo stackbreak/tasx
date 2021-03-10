@@ -28,4 +28,5 @@ type Task interface {
 	GetAll(personId, listId int) ([]models.Task, error)
 	GetOne(personId, taskId int) (*models.Task, error)
 	DeleteOne(personId, taskId int) error
+	UpdateOne(personId, taskId int, inputData *models.InputUpdateTask) error
 }

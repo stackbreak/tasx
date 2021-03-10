@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 
@@ -125,5 +126,58 @@ func (r *TaskRepo) DeleteOne(personId, taskId int) error {
 
 	var id int
 	err := r.db.QueryRow(stmt, taskId, personId).Scan(&id)
+	return err
+}
+
+func (r *TaskRepo) UpdateOne(personId, taskId int, inputData *models.InputUpdateTask) error {
+	setVals := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if inputData.Title != nil {
+		setVals = append(setVals, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *inputData.Title)
+		argId++
+	}
+
+	if inputData.Description != nil {
+		setVals = append(setVals, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *inputData.Description)
+		argId++
+	}
+
+	if inputData.IsDone != nil {
+		setVals = append(setVals, fmt.Sprintf("is_done=$%d", argId))
+		args = append(args, *inputData.IsDone)
+		argId++
+	}
+
+	setStmt := strings.Join(setVals, ", ")
+
+	stmt := fmt.Sprintf(`
+		update %s t
+		set %s
+		from
+			%s tl,
+			%s ttl
+		where
+			t.id = $%d
+			and t.id = ttl.task_id
+			and tl.id = ttl.task_list_id
+			and tl.person_id = $%d
+		returning t.id
+	`,
+		tableTask,
+		setStmt,
+		tableTaskList,
+		tableTaskToList,
+		argId,
+		argId+1,
+	)
+
+	args = append(args, taskId, personId)
+
+	var id int
+	err := r.db.QueryRow(stmt, args...).Scan(&id)
 	return err
 }
