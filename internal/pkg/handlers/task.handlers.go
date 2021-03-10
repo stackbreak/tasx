@@ -65,7 +65,27 @@ func (gh *GlobalHandler) getAllTasks(ctx *gin.Context) {
 }
 
 func (gh *GlobalHandler) getOneTaskById(ctx *gin.Context) {
-	//
+	personId, err := extractPersonIdFromCtx(ctx)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	taskId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidTaskIdParam.Error())
+		return
+	}
+
+	task, err := gh.services.TaskServiceGetOne(personId, taskId)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &gin.H{
+		"task": task,
+	})
 }
 
 func (gh *GlobalHandler) updateOneTask(ctx *gin.Context) {
@@ -73,5 +93,23 @@ func (gh *GlobalHandler) updateOneTask(ctx *gin.Context) {
 }
 
 func (gh *GlobalHandler) deleteOneTask(ctx *gin.Context) {
-	//
+	personId, err := extractPersonIdFromCtx(ctx)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	taskId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusBadRequest, ErrInvalidTaskIdParam.Error())
+		return
+	}
+
+	err = gh.services.TaskServiceDeleteOne(personId, taskId)
+	if err != nil {
+		gh.callRespGenericError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &respStatus{"ok"})
 }

@@ -39,11 +39,14 @@ func (gh *GlobalHandler) InitRoutes() *gin.Engine {
 			{
 				items.POST("/", gh.createOneTask)
 				items.GET("/", gh.getAllTasks)
-				items.GET("/:task_id", gh.getOneTaskById)
-				items.PUT("/:task_id", gh.updateOneTask)
-				items.DELETE("/:task_id", gh.deleteOneTask)
 			}
+		}
 
+		items := api.Group("/items")
+		{
+			items.GET("/:id", gh.getOneTaskById)
+			items.PUT("/:id", gh.updateOneTask)
+			items.DELETE("/:id", gh.deleteOneTask)
 		}
 	}
 

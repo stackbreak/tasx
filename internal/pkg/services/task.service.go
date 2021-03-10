@@ -14,3 +14,11 @@ func (s *Services) TaskServiceCreateOne(personId, listId int, task *models.Task)
 func (s *Services) TaskServiceGetAll(personId, listId int) ([]models.Task, error) {
 	return s.repo.Task.GetAll(personId, listId)
 }
+
+func (s *Services) TaskServiceGetOne(personId, taskId int) (*models.Task, error) {
+	return s.repo.Task.GetOne(personId, taskId)
+}
+
+func (s *Services) TaskServiceDeleteOne(personId, taskId int) error {
+	return s.repo.Task.DeleteOne(personId, taskId)
+}

@@ -77,3 +77,53 @@ func (r *TaskRepo) GetAll(personId, listId int) ([]models.Task, error) {
 
 	return items, err
 }
+
+func (r *TaskRepo) GetOne(personId, taskId int) (*models.Task, error) {
+	stmt := fmt.Sprintf(`
+		select
+			t.id,
+			t.title,
+			t.description,
+			t.is_done
+		from %s t
+		join %s ttl
+			on t.id = ttl.task_id
+		join %s tl
+			on tl.id = ttl.task_list_id
+		where
+			t.id = $1
+			and person_id = $2
+	`,
+		tableTask,
+		tableTaskToList,
+		tableTaskList,
+	)
+
+	task := new(models.Task)
+	err := r.db.Get(task, stmt, taskId, personId)
+
+	return task, err
+}
+
+func (r *TaskRepo) DeleteOne(personId, taskId int) error {
+	stmt := fmt.Sprintf(`
+		delete from %s t
+		using
+			%s ttl,
+			%s tl
+		where
+			t.id = $1
+			and t.id = ttl.task_id
+			and tl.id = ttl.task_list_id
+			and tl.person_id = $2
+		returning t.id
+	`,
+		tableTask,
+		tableTaskToList,
+		tableTaskList,
+	)
+
+	var id int
+	err := r.db.QueryRow(stmt, taskId, personId).Scan(&id)
+	return err
+}

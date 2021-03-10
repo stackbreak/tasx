@@ -82,12 +82,13 @@ func (r *TaskListRepo) DeleteOne(personId, taskListId int) error {
 		where
 			person_id = $1
 			and id = $2
+		returning id
 	`,
 		tableTaskList,
 	)
 
-	_, err := r.db.Exec(stmt, personId, taskListId)
-
+	var id int
+	err := r.db.QueryRow(stmt, personId, taskListId).Scan(&id)
 	return err
 }
 

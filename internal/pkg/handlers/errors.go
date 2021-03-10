@@ -8,6 +8,7 @@ import (
 var (
 	ErrEmptyBodyJSON        = errors.New("pkg.handlers: empty request body")
 	ErrInvalidListIdParam   = errors.New("pkg.handlers: invalid list_id param")
+	ErrInvalidTaskIdParam   = errors.New("pkg.handlers: invalid task_id param")
 	ErrPersonIdNotExtracted = errors.New("pkg.handlers: unable to extract person_id")
 )
 
