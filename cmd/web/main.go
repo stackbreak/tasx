@@ -1,7 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 
@@ -47,10 +52,24 @@ func main() {
 	globalHandler := handlers.NewGlobalHandler(services, log)
 
 	port := config.File.GetString("api.port")
-
 	srv := new(web.Server)
-	fmt.Println("Server start on port:", port)
-	if err := srv.Run(port, globalHandler.InitRoutes()); err != nil {
-		log.Fatal("error occurred while running server:", err)
+
+	go func() {
+		if err := srv.Run(port, globalHandler.InitRoutes()); err != nil && err != http.ErrServerClosed {
+			log.Fatal("error occurred while running server:", err)
+		}
+	}()
+
+	log.Println("App started on port:", port)
+
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
+
+	sig := <-signalCh
+	log.Println("App shutting down, received signal:", sig)
+
+	ctxShutdown, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	if err := srv.Shutdown(ctxShutdown); err != nil {
+		log.Fatal("error occurred on server shutdown:", err)
 	}
 }
