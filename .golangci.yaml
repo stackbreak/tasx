@@ -15,8 +15,7 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - golint
-    - gomnd
+    # - gomnd
     - goprintffuncname
     - gosec
     - gosimple
@@ -39,3 +38,8 @@ linters:
     - unused
     - varcheck
     - whitespace
+issues:
+  exclude-rules:
+    - linters:
+        - stylecheck
+      text: "ST1003:"

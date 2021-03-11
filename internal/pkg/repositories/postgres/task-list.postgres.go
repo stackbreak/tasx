@@ -46,6 +46,7 @@ func (r *TaskListRepo) GetAll(personId int) ([]models.TaskList, error) {
 		from %s
 		where
 			person_id = $1
+		order by id
 	`,
 		tableTaskList,
 	)

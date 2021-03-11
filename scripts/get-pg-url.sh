@@ -5,4 +5,4 @@ CURRENT_DIR=$(dirname $0)
 
 read_env ${1:-.env}
 
-echo "postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}"
+echo "postgres://${DB_USER}:${DB_PASS}@localhost:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}"

@@ -1,18 +1,24 @@
 TOOLS_BIN_DIR = ./tools/bin/
-TOOLS_FILE = ./tools/tools.go
 TOOLS_MIGRATE_FILE = ./tools/migrate.go
 MIGRATIONS_DIR = ./migrations
-LOCAL_ENV_FILE = ./configs/local.env
+LOCAL_ENV_FILE = .env.local
 SCRIPT_GET_PG_URL = ./scripts/get-pg-url.sh
 
-env-start:
-	docker-compose --env-file $(LOCAL_ENV_FILE) up -d
+COMPOSE_LOCAL = docker-compose --env-file $(LOCAL_ENV_FILE)
 
-env-stop:
-	docker-compose --env-file $(LOCAL_ENV_FILE) down
+.PHONY: compose-build compose-up compose-down compose-logs-web install-tool-migrate migrate-up migrate-down run
 
-install-tools:
-	go list -f '{{range .Imports}}{{.}} {{end}}' $(TOOLS_FILE) | xargs go build -o $(TOOLS_BIN_DIR)
+compose-build:
+	$(COMPOSE_LOCAL) build
+
+compose-up:
+	$(COMPOSE_LOCAL) up -d
+
+compose-down:
+	$(COMPOSE_LOCAL) down
+
+compose-logs-web:
+	@$(COMPOSE_LOCAL) logs -f web
 
 install-tool-migrate:
 	go list -f '{{range .Imports}}{{.}} {{end}}' $(TOOLS_MIGRATE_FILE) | xargs go build -tags 'postgres' -o $(TOOLS_BIN_DIR)

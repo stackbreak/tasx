@@ -15,7 +15,7 @@ type respGenericError struct {
 }
 
 type respAllTaskLists struct {
-	Data []models.TaskList `json:"data"`
+	Data []models.TaskList `json:"lists"`
 }
 
 func (gh *GlobalHandler) callRespGenericError(ctx *gin.Context, statusCode int, message string) {
