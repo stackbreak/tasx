@@ -1,26 +1,100 @@
-# Todo
+# Tasx
 
-## env file example
+> **`Tasx`** is an example microservice app built with Go.
 
-`configs/local.env`
+## About
 
-```
-DB_USER=secret_user
-DB_PASS=secret_pass
-DB_NAME=secret_dbname
-DB_HOST=localhost
-DB_PORT=5432
-DB_SSLMODE=disable
+This app provides **REST API** for the creation and management of the task lists linked to users.
 
-PGADMIN_EMAIL=secret@email.org
-PGADMIN_PASS=secret_pass
-PGADMIN_PORT=4444
+For user access separation is used **JWT**-based authentication system.
 
-TOKEN_SECRET=super@HYPER!secret
-```
+_It was created for educational purposes._
 
+## Requirements
+- Go `1.16+`
+- Go Modules
+- Docker & Docker-Compose
+
+## Getting Started
+
+### `.env` files
+
+Before starting, you should create two `.env` files with environment variables needed to configure the app and pass private secrets, for **dev** and **prod** mode.
+- **`.env.local`**
+  ```json
+  APP_PORT=4000
+
+  DB_USER=example_dbuser // replace to yours
+  DB_PASS=example_dbpass // replace to yours
+  DB_NAME=example_dbname // replace to yours
+  DB_HOST=pgsql          // addr in docker-compose network
+  DB_PORT=5432
+  DB_SSLMODE=disable
+
+  TOKEN_SECRET=super@HYPER!secret12345 // replace to yours
+  ```
+
+- **`.env.prod`**
+  ```json
+  APP_PORT=4000
+  GIN_MODE=release
+
+  DB_USER=prod_dbuser // replace to yours
+  DB_PASS=prod_dbpass // replace to yours
+  DB_NAME=prod_dbname // replace to yours
+  DB_HOST=localhost   // replace to yours
+  DB_PORT=5432        // replace to yours
+  DB_SSLMODE=disable
+
+  TOKEN_SECRET=super@HYPER!secret12345 // replace to yours
+  ```
+
+### dev mode
+
+1. **install deps:**
+  `go mod download`
+
+1. **build migration tool:**
+  `make install-tool-migrate`
+
+1. **run local postgres:**
+  `make compose-pgsql`
+
+1. **update migrations:**
+  `make migrate-up`
+
+1. **build dev container:**
+  `make compose-build`
+
+1. **run app in dev container** (with hot-reload):
+  `make compose-up`
+
+> for debug with `dlv` replace in `docker-compose.yaml` command part `./entry.sh watch` to `./entry.sh debug`.
+
+### prod mode
+
+1. **build prod container:**
+  `make prod-build` _(it creates `tasx_app` image)_
+
+1. **update migrations** (on target database):
+  `make prod-migrate-up`
+
+1. **run app container:**
+  `make prod-run`
 
 ## REST API Endpoints
+
+### Healthcheck
+
+- **GET** **`/healthz`**
+
+  **Response:** `200 OK`
+  ```json
+  {
+    "status": "available"
+  }
+  ```
+  ---
 
 ### Authentication
 
@@ -29,9 +103,9 @@ TOKEN_SECRET=super@HYPER!secret
   **Body:**
   ```json
   {
-    "name": "Sector Wins",
-    "username": "shellslayer",
-    "password": "123qwe"
+    "name": "John Doe",
+    "username": "johndoe777",
+    "password": "secret_pass"
   }
   ```
   **Response:** `200 OK`
@@ -42,8 +116,8 @@ TOKEN_SECRET=super@HYPER!secret
   **Body:**
   ```json
   {
-    "username": "shellslayer",
-    "password": "123qwe"
+    "username": "johndoe777",
+    "password": "secret_pass"
   }
   ```
   **Response:** `200 OK`

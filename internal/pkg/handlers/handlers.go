@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
@@ -16,8 +18,16 @@ func NewGlobalHandler(services *services.Services, log *logrus.Logger) *GlobalHa
 	return &GlobalHandler{services, log}
 }
 
+func (gh *GlobalHandler) healthCheck(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, &gin.H{
+		"status": "available",
+	})
+}
+
 func (gh *GlobalHandler) InitRoutes() *gin.Engine {
 	router := gin.New()
+
+	router.GET("/healthz", gh.healthCheck)
 
 	auth := router.Group("/auth")
 	{
